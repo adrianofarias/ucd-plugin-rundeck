@@ -38,6 +38,7 @@ public class HttpHelper {
 
     def getResponseText()   {
         def responseCode = request.getResponseCode()
+        println responseCode
         if (responseCode.equals(200))   {
             return getURL.getInputStream().getText()
         } else  {

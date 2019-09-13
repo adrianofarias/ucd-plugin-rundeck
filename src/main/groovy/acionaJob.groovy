@@ -26,10 +26,16 @@ final def rundeck_job_parameters = props['rundeck_job_parameters']
 final def final_rundeck_url = """${rundeck_url}/${rundeck_job_name}/run?authtoken=${rundeck_authentication_token}&${rundeck_job_parameters}&format=xml"""
 
 //Using HttpHelper to execute rundeck job
+println final_rundeck_url
 HttpHelper helper = new HttpHelper(final_rundeck_url,"POST")
 
 def responseText = helper.getResponseText()
-println responseText
+if (responseText) {
+	println responseText	
+}	else	{
+	System.exit(1)
+}
+
 
 //Set an output property
 airTool.setOutputProperty("responseText", "${responseText}")
