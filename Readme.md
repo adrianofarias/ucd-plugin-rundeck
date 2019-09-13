@@ -1,14 +1,14 @@
-# IBM UrbanCode Deploy Plug-in Template
+# IBM UrbanCode Deploy Plug-in - Rundeck - BB
 ---
 
-The UrbanCode Deploy Plug-in Template project is a sample project that can be forked and used as a base for community plug-ins.
+O plug-in Rundeck - BB para UrbanCode Deploy é um projeto que pode ser utilizado para gerenciar o acionamento de jobs do Rundeck.
 
-Create your own plug-in by following our [beginner](https://developer.ibm.com/urbancode/docs/urbancode-plug-development-tutorial/) and [upgrade](https://developer.ibm.com/urbancode/docs/community-plug-development-upgrade-tutorial/) tutorials. For more documentation on plug-in development, see the [IBM UrbanCode Build help](http://www-01.ibm.com/support/knowledgecenter/SS8NMD_6.1.2/com.ibm.ucbuild.doc/topics/c_node_extend.html) or the [IBM UrbanCode Deploy help](http://www.ibm.com/support/knowledgecenter/SS4GSP_6.2.1/com.ibm.udeploy.doc/topics/c_node_extending.html).
+Para criar o seu próprio plugin: [Iniciante](https://developer.ibm.com/urbancode/docs/urbancode-plug-development-tutorial/) [atualizar](https://developer.ibm.com/urbancode/docs/community-plug-development-upgrade-tutorial/). Para mais documentação sobre o desenvolvimento de um plug-in, veja [IBM UrbanCode Deploy help](http://www.ibm.com/support/knowledgecenter/SS4GSP_6.2.1/com.ibm.udeploy.doc/topics/c_node_extending.html).
 
-### Compiling Source
+### Para compilar
 `gradle`
 
-The helloworld plug-in .zip file can be found in build/distributions after you build the project.
+The arquivo zip do rundeck plug-in pode ser encontrado em build/distributions depois que você buildar o projeto.
 
-### License
+### Licença
 This plugin is protected under the [Eclipse Public 1.0 License](http://www.eclipse.org/legal/epl-v10.html)
