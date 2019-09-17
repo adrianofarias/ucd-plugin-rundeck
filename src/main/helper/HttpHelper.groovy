@@ -37,12 +37,16 @@ public class HttpHelper {
     }
 
     def getResponseText()   {
-        def responseCode = request.getResponseCode()
-        println responseCode
-        if (responseCode.equals(200))   {
-            return getURL.getInputStream().getText()
+        if (request) {
+            def responseCode = request.getResponseCode()
+            if (responseCode.equals(200))   {
+                return request.getInputStream().getText()
+            } else  {
+                println 'Erro: ${responseCode}'
+                System.exit(1)
+            }   
         } else  {
-            return null
+            System.exit(1)
         }
     }
 }

@@ -57,7 +57,7 @@ dependencies {
 sourceSets {
     main {
         groovy {
-            srcDirs = ['src/main/groovy', 'src/main/zip', 'src/main/util']
+            srcDirs = ['src/main/groovy', 'src/main/zip', 'src/main/util','src/main/helper']
         }
     }
 }

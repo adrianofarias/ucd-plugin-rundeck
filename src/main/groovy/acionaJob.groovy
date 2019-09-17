@@ -26,17 +26,46 @@ final def rundeck_job_parameters = props['rundeck_job_parameters']
 final def final_rundeck_url = """${rundeck_url}/${rundeck_job_name}/run?authtoken=${rundeck_authentication_token}&${rundeck_job_parameters}&format=xml"""
 
 //Using HttpHelper to execute rundeck job
-println final_rundeck_url
 HttpHelper helper = new HttpHelper(final_rundeck_url,"POST")
-
 def responseText = helper.getResponseText()
-if (responseText) {
-	println responseText	
-}	else	{
-	System.exit(1)
-}
-
 
 //Set an output property
 airTool.setOutputProperty("responseText", "${responseText}")
 airTool.storeOutputProperties()//write the output properties to the file
+
+//Retrieve job status
+def response = new XmlParser().parseText(responseText)
+def status_url = response.execution[0].@href+'/output?authtoken='+rundeck_authentication_token
+def job_status = new HttpHelper(status_url).getResponseText()
+def current_status_data = new XmlParser().parseText(job_status)
+def current_status = current_status_data.execState.text()
+def completed = current_status_data.completed.text()
+
+while (current_status=='running') {
+	//Reset status
+	job_status = new HttpHelper(status_url).getResponseText()
+	current_status_data = new XmlParser().parseText(job_status)
+	current_status = current_status_data.execState.text()
+	completed = current_status_data.completed.text()
+
+	switch(current_status) {
+		case 'succeeded':
+			println '...'
+			println 'Deploy efetuado com com sucesso'
+			System.exit(0)
+		case 'failed':
+			println '\n##################### DEPLOY FALHOU #####################\n'
+			println(new HttpHelper(status_url.plus('&format=text')).getResponseText())
+			System.exit(1)
+		case 'aborted':
+			println '\n##################### DEPLOY ABORTADO #####################\n'
+			println(new HttpHelper(status_url.plus('&format=text')).getResponseText())
+			System.exit(1)
+		default:
+			print '...'
+	}
+	sleep(10000)
+}
+
+
+
