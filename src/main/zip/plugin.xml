@@ -44,7 +44,7 @@
                      description="URL de acesso ao Rundeck."/>
       </property>
       <property name="rundeck_authentication_token" required="true">
-        <property-ui type="textBox"
+        <property-ui type="secureBox"
                      label="Token de Autenticação"
                      description="Token de autenticacao para acesso ao Rundeck."/>
       </property>      
