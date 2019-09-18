@@ -57,12 +57,21 @@ while (current_status=='running') {
 			println '\n##################### DEPLOY FALHOU #####################\n'
 			println(new HttpHelper(status_url.plus('&format=text')).getResponseText())
 			System.exit(1)
+		case 'failed-with-retry':
+			println '\n##################### DEPLOY FALHOU #####################\n'
+			println(new HttpHelper(status_url.plus('&format=text')).getResponseText())
+			System.exit(1)
 		case 'aborted':
 			println '\n##################### DEPLOY ABORTADO #####################\n'
 			println(new HttpHelper(status_url.plus('&format=text')).getResponseText())
 			System.exit(1)
-		default:
+		case 'running':
 			print '...'
+			break
+		default:
+			print '\n##################### ERRO INESPERADO #####################\n'
+			println(new HttpHelper(status_url.plus('&format=text')).getResponseText())
+			System.exit(1)
 	}
 	sleep(10000)
 }

@@ -42,7 +42,8 @@ public class HttpHelper {
             if (responseCode.equals(200))   {
                 return request.getInputStream().getText()
             } else  {
-                println 'Erro: ${responseCode}'
+                println "Erro: ${responseCode}"
+                println request.getInputStream().getText()
                 System.exit(1)
             }   
         } else  {
