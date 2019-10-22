@@ -3,7 +3,7 @@
         xmlns:server="http://www.urbancode.com/PluginServerXMLSchema_v1"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <header>
-    <identifier id="br.com.bb.urbancode.plugin.rundeck.dev" version="@API_VERSION@" name="Rundeck - BB.dev"/>
+    <identifier id="br.com.bb.urbancode.plugin.rundeck" version="@API_VERSION@" name="Rundeck - BB"/>
     <description>O plugin Rundeck BB aciona e gerencia a execução de jobs do Rundeck</description>
     <tag>DEV/BB/Rundeck</tag>
   </header>
