@@ -1,5 +1,7 @@
 import com.urbancode.air.AirPluginTool
 import HttpHelper
+import static groovyx.net.http.Method.*
+
 
 
 /* This gets us the plugin tool helper. 
@@ -26,55 +28,60 @@ final def rundeck_job_parameters = props['rundeck_job_parameters']
 final def final_rundeck_url = """${rundeck_url}/${rundeck_job_name}/run?authtoken=${rundeck_authentication_token}&${rundeck_job_parameters}&format=xml"""
 
 //Using HttpHelper to execute rundeck job
-HttpHelper helper = new HttpHelper(final_rundeck_url,"POST")
-def responseText = helper.getResponseText()
+HttpHelper helper = new HttpHelper(final_rundeck_url,POST,null) 
+def response = helper.getResponse()
+def rundeck_execution_url = new XmlSlurper().parseText(response).execution[0].@href.toString()
 
 //Set an output property
-airTool.setOutputProperty("responseText", "${responseText}")
+airTool.setOutputProperty("response", "${response}")
+airTool.setOutputProperty("rundeck_execution_url", "${rundeck_execution_url}")
 airTool.storeOutputProperties()//write the output properties to the file
 
-//Retrieve job status
-def response = new XmlParser().parseText(responseText)
-def status_url = response.execution[0].@href+'/output?authtoken='+rundeck_authentication_token
-def job_status = new HttpHelper(status_url).getResponseText()
-def current_status_data = new XmlParser().parseText(job_status)
-def current_status = current_status_data.execState.text()
-def completed = current_status_data.completed.text()
+//To retrieve job status
+def response_xml = new XmlSlurper().parseText(response)
+def status_url = rundeck_execution_url+'/output?authtoken='+rundeck_authentication_token+'&format=xml'
+def job_status = new HttpHelper(status_url).getResponse()
+def job_status_xml = new XmlSlurper().parseText(job_status)
+def current_status = job_status_xml.execState.toString()
+def completed = job_status_xml.completed.toString()
+
+def printStatus =	{ String msg_type, String msg	->
+	println '\n############################################################\n'
+	println "${msg_type}: ${msg}"
+	println(new HttpHelper(status_url.replace('xml','text')).getResponse())
+}
 
 while (current_status=='running') {
 	//Reset status
-	job_status = new HttpHelper(status_url).getResponseText()
-	current_status_data = new XmlParser().parseText(job_status)
-	current_status = current_status_data.execState.text()
-	completed = current_status_data.completed.text()
+	job_status = new HttpHelper(status_url).getResponse()
+	job_status_xml = new XmlSlurper().parseText(job_status)
+	current_status = job_status_xml.execState.toString()
+	completed = job_status_xml.completed.toString()
 
 	switch(current_status) {
 		case 'succeeded':
 			println '...'
-			println 'Deploy efetuado com com sucesso'
+			printStatus.call('INFO','Job acionado e executado com sucesso')
 			System.exit(0)
 		case 'failed':
-			println '\n##################### DEPLOY FALHOU #####################\n'
-			println(new HttpHelper(status_url.plus('&format=text')).getResponseText())
+			printStatus.call('ERRO','Job falhou.')
 			System.exit(1)
 		case 'failed-with-retry':
-			println '\n##################### DEPLOY FALHOU #####################\n'
-			println(new HttpHelper(status_url.plus('&format=text')).getResponseText())
+			printStatus.call('ERRO','Job falhou.')
 			System.exit(1)
 		case 'aborted':
-			println '\n##################### DEPLOY ABORTADO #####################\n'
-			println(new HttpHelper(status_url.plus('&format=text')).getResponseText())
+			printStatus.call('ERRO','Job abortado.')
 			System.exit(1)
 		case 'running':
 			print '...'
 			break
 		default:
-			print '\n##################### ERRO INESPERADO #####################\n'
-			println(new HttpHelper(status_url.plus('&format=text')).getResponseText())
+			printStatus.call('ERRO','Job com erro inesperado.')
 			System.exit(1)
 	}
 	sleep(10000)
 }
-
-
-
+if (current_status!='runnning') {
+	printStatus.call('ERRO','Job com erro inesperado.')
+	System.exit(1)
+}
