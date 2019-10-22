@@ -50,38 +50,40 @@ def printStatus =	{ String msg_type, String msg	->
 	println "${msg_type}: ${msg}"
 	println(new HttpHelper(status_url.replace('xml','text')).getResponse())
 }
+if (current_status=='running') {
+	while (current_status=='running') {
+		//Reset status
+		job_status = new HttpHelper(status_url).getResponse()
+		job_status_xml = new XmlSlurper().parseText(job_status)
+		current_status = job_status_xml.execState.toString()
+		completed = job_status_xml.completed.toString()
 
-while (current_status=='running') {
-	//Reset status
-	job_status = new HttpHelper(status_url).getResponse()
-	job_status_xml = new XmlSlurper().parseText(job_status)
-	current_status = job_status_xml.execState.toString()
-	completed = job_status_xml.completed.toString()
-
-	switch(current_status) {
-		case 'succeeded':
-			println '...'
-			printStatus.call('INFO','Job acionado e executado com sucesso')
-			System.exit(0)
-		case 'failed':
-			printStatus.call('ERRO','Job falhou.')
-			System.exit(1)
-		case 'failed-with-retry':
-			printStatus.call('ERRO','Job falhou.')
-			System.exit(1)
-		case 'aborted':
-			printStatus.call('ERRO','Job abortado.')
-			System.exit(1)
-		case 'running':
-			print '...'
-			break
-		default:
-			printStatus.call('ERRO','Job com erro inesperado.')
-			System.exit(1)
-	}
-	sleep(10000)
-}
-if (current_status!='runnning') {
-	printStatus.call('ERRO','Job com erro inesperado.')
+		switch(current_status) {
+			case 'succeeded':
+				println '...'
+				printStatus.call('INFO','Job acionado e executado com sucesso')
+				System.exit(0)
+			case 'failed':
+				printStatus.call('ERRO','Job falhou.')
+				System.exit(1)
+			case 'failed-with-retry':
+				printStatus.call('ERRO','Job falhou.')
+				System.exit(1)
+			case 'aborted':
+				printStatus.call('ERRO','Job abortado.')
+				System.exit(1)
+			case 'running':
+				print '...'
+				break
+			default:
+				printStatus.call('ERRO','Job com erro inesperado.')
+				System.exit(1)
+		}
+		sleep(10000)
+	}	
+} else {
+	println '\n############################################################\n'
+	println 'ERRO: Job com erro inesperado.'
+	println job_status
 	System.exit(1)
 }
