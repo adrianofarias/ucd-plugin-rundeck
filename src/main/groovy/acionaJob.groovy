@@ -50,8 +50,8 @@ def printStatus =	{ String msg_type, String msg	->
 	println "${msg_type}: ${msg}"
 	println(new HttpHelper(status_url.replace('xml','text')).getResponse())
 }
-if (current_status=='running') {
-	while (current_status=='running') {
+if (current_status=='running' || current_status=='scheduled') {
+	while (current_status=='running' || current_status=='scheduled') {
 		//Reset status
 		job_status = new HttpHelper(status_url).getResponse()
 		job_status_xml = new XmlSlurper().parseText(job_status)
@@ -73,6 +73,9 @@ if (current_status=='running') {
 				printStatus.call('ERRO','Job abortado.')
 				System.exit(1)
 			case 'running':
+				print '...'
+				break
+			case 'scheduled':
 				print '...'
 				break
 			default:
