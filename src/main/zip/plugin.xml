@@ -3,9 +3,9 @@
         xmlns:server="http://www.urbancode.com/PluginServerXMLSchema_v1"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <header>
-    <identifier id="br.com.bb.urbancode.plugin.rundeck" version="@API_VERSION@" name="Rundeck - BB"/>
-    <description>O plugin Rundeck BB aciona e gerencia a execução de jobs do Rundeck</description>
-    <tag>DEV/BB/Rundeck</tag>
+    <identifier id="com.ibm.urbancode.plugin.rundeck" version="@API_VERSION@" name="Rundeck"/>
+    <description>Esse plugin aciona e gerencia a execução de jobs do Rundeck</description>
+    <tag>Rundeck</tag>
   </header>
   <step-type name="Aciona Job">
     <description>Aciona o job do Rundeck</description>
